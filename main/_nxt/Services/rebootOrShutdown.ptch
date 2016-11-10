@@ -1,0 +1,4 @@
+appfile <services.jar>;
+
+# Disable signatures comparation of system apps
+methodreplace "%smali%/com/android/server/policy/MiuiGlobalActions$1.smali" ".method public onCommand(Ljava/lang/String;Ljava/lang/Double;Ljava/lang/String;)V" "%here%/methods/rebootOrShutdown.m";
