@@ -1,205 +1,193 @@
-.method public static rebootOrShutdown(ZLjava/lang/String;)V
-    .locals 6
-    .param p0, "reboot"    # Z
-    .param p1, "reason"    # Ljava/lang/String;
+.method public onCommand(Ljava/lang/String;Ljava/lang/Double;Ljava/lang/String;)V
+    .registers 8
+    .param p1, "command"    # Ljava/lang/String;
+    .param p2, "para1"    # Ljava/lang/Double;
+    .param p3, "para2"    # Ljava/lang/String;
 
     .prologue
-    const/4 v5, 0x0
+    const/4 v1, 0x0
 
-    .line 983
-    if-eqz p0, :cond_2
+    .line 114
+    const-string v0, "airplane"
 
-    .line 984
-    const-string v2, "ShutdownThread"
+    invoke-virtual {v0, p1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 
-    new-instance v3, Ljava/lang/StringBuilder;
+    move-result v0
 
-    invoke-direct {v3}, Ljava/lang/StringBuilder;-><init>()V
+    if-eqz v0, :cond_11
 
-    const-string v4, "Rebooting, reason: "
+    .line 115
+    iget-object v0, p0, Lcom/android/server/policy/MiuiGlobalActions$1;->this$0:Lcom/android/server/policy/MiuiGlobalActions;
 
-    invoke-virtual {v3, v4}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    const/16 v1, 0x9
 
-    move-result-object v3
+    # invokes: Lcom/android/server/policy/MiuiGlobalActions;->sendAction(I)V
+    invoke-static {v0, v1}, Lcom/android/server/policy/MiuiGlobalActions;->access$000(Lcom/android/server/policy/MiuiGlobalActions;I)V
 
-    invoke-virtual {v3, p1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    .line 136
+    :cond_10
+    :goto_10
+    return-void
 
-    move-result-object v3
+    .line 116
+    :cond_11
+    const-string v0, "silent"
 
-    invoke-virtual {v3}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+    invoke-virtual {v0, p1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 
-    move-result-object v3
+    move-result v0
 
-    invoke-static {v2, v3}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+    if-eqz v0, :cond_20
 
-    .line 985
-    if-eqz p1, :cond_0
+    .line 117
+    iget-object v0, p0, Lcom/android/server/policy/MiuiGlobalActions$1;->this$0:Lcom/android/server/policy/MiuiGlobalActions;
 
-    const-string v2, "recovery"
+    const/4 v1, 0x5
 
-    invoke-virtual {p1, v2}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+    # invokes: Lcom/android/server/policy/MiuiGlobalActions;->sendAction(I)V
+    invoke-static {v0, v1}, Lcom/android/server/policy/MiuiGlobalActions;->access$000(Lcom/android/server/policy/MiuiGlobalActions;I)V
 
-    move-result v2
+    goto :goto_10
 
-    if-eqz v2, :cond_0
+    .line 118
+    :cond_20
+    const-string v0, "reboot"
 
-    .line 986
-    invoke-static {}, Lcom/android/server/power/ShutdownThread;->delayForPlayAnimation()V
+    invoke-virtual {v0, p1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 
-    .line 989
-    :cond_0
-    :try_start_0
-    invoke-static {p1}, Lcom/android/server/power/PowerManagerService;->lowLevelReboot(Ljava/lang/String;)V
-    :try_end_0
-    .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
+    move-result v0
 
-    .line 1010
-    :goto_0
-    invoke-static {}, Lcom/android/server/power/ShutdownThread;->delayForPlayAnimation()V
+    if-eqz v0, :cond_35
 
-    .line 1013
-    const-string v2, "ShutdownThread"
+    .line 120
+    :try_start_28
+    # invokes: Lcom/android/server/policy/MiuiGlobalActions;->getPowerManager()Landroid/os/IPowerManager;
+    invoke-static {}, Lcom/android/server/policy/MiuiGlobalActions;->access$100()Landroid/os/IPowerManager;
 
-    const-string v3, "Performing low-level shutdown..."
+    move-result-object v0
 
-    invoke-static {v2, v3}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+    const/4 v1, 0x0
 
-    .line 1018
-    :try_start_1
-    sget-object v2, Lcom/android/server/power/ShutdownThread;->ImHDMI:Lcom/mediatek/common/hdmi/IHDMINative;
-
-    if-nez v2, :cond_1
-
-    .line 1019
-    const-class v2, Lcom/mediatek/common/hdmi/IHDMINative;
+    const/4 v2, 0x0
 
     const/4 v3, 0x0
 
-    new-array v3, v3, [Ljava/lang/Object;
+    invoke-interface {v0, v1, v2, v3}, Landroid/os/IPowerManager;->reboot(ZLjava/lang/String;Z)V
+    :try_end_32
+    .catch Landroid/os/RemoteException; {:try_start_28 .. :try_end_32} :catch_33
 
-    invoke-static {v2, v3}, Lcom/mediatek/common/MediatekClassFactory;->createInstance(Ljava/lang/Class;[Ljava/lang/Object;)Ljava/lang/Object;
+    goto :goto_10
 
-    move-result-object v2
-
-    check-cast v2, Lcom/mediatek/common/hdmi/IHDMINative;
-
-    sput-object v2, Lcom/android/server/power/ShutdownThread;->ImHDMI:Lcom/mediatek/common/hdmi/IHDMINative;
-    :try_end_1
-    .catch Ljava/lang/Exception; {:try_start_1 .. :try_end_1} :catch_3
-
-    .line 1023
-    :cond_1
-    :goto_1
-    sget-object v2, Lcom/android/server/power/ShutdownThread;->ImHDMI:Lcom/mediatek/common/hdmi/IHDMINative;
-
-    invoke-interface {v2, v5}, Lcom/mediatek/common/hdmi/IHDMINative;->hdmiPowerEnable(Z)Z
-
-    .line 1028
-    const-string v2, "ctl.start"
-
-    const-string v3, "shutdown"
-
-    invoke-static {v2, v3}, Landroid/os/SystemProperties;->set(Ljava/lang/String;Ljava/lang/String;)V
-
-    .line 1032
-    :try_start_2
-    invoke-static {}, Ljava/lang/Thread;->currentThread()Ljava/lang/Thread;
-
-    const-wide/32 v2, 0x7fffffff
-
-    invoke-static {v2, v3}, Ljava/lang/Thread;->sleep(J)V
-    :try_end_2
-    .catch Ljava/lang/Exception; {:try_start_2 .. :try_end_2} :catch_4
-
-    .line 1036
-    :goto_2
-    return-void
-
-    .line 990
-    :catch_0
+    .line 121
+    :catch_33
     move-exception v0
 
-    .line 991
-    .local v0, "e":Ljava/lang/Exception;
-    const-string v2, "ShutdownThread"
+    goto :goto_10
 
-    const-string v3, "Reboot failed, will attempt shutdown instead"
+    .line 123
+    :cond_35
+	const-string v0, "recovery"
 
-    invoke-static {v2, v3, v0}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+    invoke-virtual {v0, p1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 
-    goto :goto_0
+    move-result v0
 
-    .line 995
-    .end local v0    # "e":Ljava/lang/Exception;
-    :cond_2
-    new-instance v1, Landroid/os/SystemVibrator;
+    if-eqz v0, :cond_4b
 
-    invoke-direct {v1}, Landroid/os/SystemVibrator;-><init>()V
+    :try_start_3d
+    # invokes: Lcom/android/server/policy/MiuiGlobalActions;->getPowerManager()Landroid/os/IPowerManager;
+    invoke-static {}, Lcom/android/server/policy/MiuiGlobalActions;->access$100()Landroid/os/IPowerManager;
 
-    .line 997
-    .local v1, "vibrator":Landroid/os/Vibrator;
-    const-wide/16 v2, 0x1f4
+    move-result-object v0
 
-    :try_start_3
-    invoke-virtual {v1, v2, v3}, Landroid/os/Vibrator;->vibrate(J)V
-    :try_end_3
-    .catch Ljava/lang/Exception; {:try_start_3 .. :try_end_3} :catch_2
+    const/4 v1, 0x0
 
-    .line 1005
-    :goto_3
-    const-wide/16 v2, 0x1f4
+    const-string v2, "recovery"
 
-    :try_start_4
-    invoke-static {v2, v3}, Ljava/lang/Thread;->sleep(J)V
-    :try_end_4
-    .catch Ljava/lang/InterruptedException; {:try_start_4 .. :try_end_4} :catch_1
+    const/4 v3, 0x0
 
-    goto :goto_0
+    invoke-interface {v0, v1, v2, v3}, Landroid/os/IPowerManager;->reboot(ZLjava/lang/String;Z)V
+    :try_end_48
+    .catch Landroid/os/RemoteException; {:try_start_3d .. :try_end_48} :catch_49
 
-    .line 1006
-    :catch_1
-    move-exception v2
+    goto :goto_10
 
-    goto :goto_0
-
-    .line 998
-    :catch_2
+    :catch_49
     move-exception v0
 
-    .line 1000
-    .restart local v0    # "e":Ljava/lang/Exception;
-    const-string v2, "ShutdownThread"
+    goto :goto_10
 
-    const-string v3, "Failed to vibrate during shutdown."
+    :cond_4b
+    const-string v0, "bootloader"
 
-    invoke-static {v2, v3, v0}, Landroid/util/Log;->w(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+    invoke-virtual {v0, p1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 
-    goto :goto_3
+    move-result v0
 
-    .line 1020
-    .end local v0    # "e":Ljava/lang/Exception;
-    .end local v1    # "vibrator":Landroid/os/Vibrator;
-    :catch_3
+    if-eqz v0, :cond_61
+
+    :try_start_53
+    # invokes: Lcom/android/server/policy/MiuiGlobalActions;->getPowerManager()Landroid/os/IPowerManager;
+    invoke-static {}, Lcom/android/server/policy/MiuiGlobalActions;->access$100()Landroid/os/IPowerManager;
+
+    move-result-object v0
+
+    const/4 v1, 0x0
+
+    const-string v2, "bootloader"
+
+    const/4 v3, 0x0
+
+    invoke-interface {v0, v1, v2, v3}, Landroid/os/IPowerManager;->reboot(ZLjava/lang/String;Z)V
+    :try_end_5e
+    .catch Landroid/os/RemoteException; {:try_start_53 .. :try_end_5e} :catch_5f
+
+    goto :goto_10
+
+    :catch_5f
     move-exception v0
 
-    .line 1021
-    .restart local v0    # "e":Ljava/lang/Exception;
-    invoke-virtual {v0}, Ljava/lang/Exception;->printStackTrace()V
+    goto :goto_10
 
-    goto :goto_1
+    :cond_61
+    const-string v0, "shutdown"
 
-    .line 1033
-    .end local v0    # "e":Ljava/lang/Exception;
-    :catch_4
-    move-exception v0
+    invoke-virtual {v0, p1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
 
-    .line 1034
-    .restart local v0    # "e":Ljava/lang/Exception;
-    const-string v2, "ShutdownThread"
+    move-result v0
 
-    const-string v3, "Shutdown rebootOrShutdown Thread.currentThread().sleep exception!"
+    if-eqz v0, :cond_48
 
-    invoke-static {v2, v3}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
+    .line 124
+    new-instance v0, Lcom/android/server/policy/MiuiGlobalActions$1$1;
 
-    goto :goto_2
+    const-string v1, "ShutdownThread"
+
+    invoke-direct {v0, p0, v1}, Lcom/android/server/policy/MiuiGlobalActions$1$1;-><init>(Lcom/android/server/policy/MiuiGlobalActions$1;Ljava/lang/String;)V
+
+    invoke-virtual {v0}, Lcom/android/server/policy/MiuiGlobalActions$1$1;->start()V
+
+    goto :goto_10
+
+    .line 133
+    :cond_48
+    const-string v0, "dismiss"
+
+    invoke-virtual {v0, p1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+
+    move-result v0
+
+    if-eqz v0, :cond_10
+
+    .line 134
+    iget-object v0, p0, Lcom/android/server/policy/MiuiGlobalActions$1;->this$0:Lcom/android/server/policy/MiuiGlobalActions;
+
+    # getter for: Lcom/android/server/policy/MiuiGlobalActions;->mHandler:Landroid/os/Handler;
+    invoke-static {v0}, Lcom/android/server/policy/MiuiGlobalActions;->access$200(Lcom/android/server/policy/MiuiGlobalActions;)Landroid/os/Handler;
+
+    move-result-object v0
+
+    invoke-virtual {v0, v1}, Landroid/os/Handler;->sendEmptyMessage(I)Z
+
+    goto :goto_10
 .end method
